@@ -27,6 +27,10 @@ module Paperclip
     def size
       File.size(self)
     end
+    
+    def image?
+      ["image/jpeg", "image/tiff", "image/png", "image/gif", "image/bmp"].include?(content_type)
+    end    
   end
 
 end

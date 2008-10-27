@@ -32,6 +32,11 @@ class IntegrationTest < Test::Unit::TestCase
     should "create its thumbnails properly" do
       assert_match /\b50x50\b/, `identify '#{@dummy.avatar.path(:thumb)}'`
     end
+    
+    should "identify its height & width" do
+      assert_equal @dummy.avatar_width, 434
+      assert_equal @dummy.avatar_height, 66
+    end
 
     context "redefining its attachment styles" do
       setup do

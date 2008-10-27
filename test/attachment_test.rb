@@ -235,6 +235,8 @@ class AttachmentTest < Test::Unit::TestCase
         @instance.stubs(:[]).with(:avatar_file_name).returns("5k.png")
         @instance.stubs(:[]).with(:avatar_content_type).returns("image/png")
         @instance.stubs(:[]).with(:avatar_file_size).returns(12345)
+        @instance.stubs(:[]).with(:avatar_width).returns(434)
+        @instance.stubs(:[]).with(:avatar_height).returns(66)
         now = Time.now
         Time.stubs(:now).returns(now)
         @instance.stubs(:[]).with(:avatar_updated_at).returns(Time.now)
@@ -335,6 +337,8 @@ class AttachmentTest < Test::Unit::TestCase
                 @instance.expects(:[]=).with(:avatar_content_type, nil)
                 @instance.expects(:[]=).with(:avatar_file_size, nil)
                 @instance.expects(:[]=).with(:avatar_updated_at, nil)
+                @instance.expects(:[]=).with(:avatar_width, nil)
+                @instance.expects(:[]=).with(:avatar_height, nil)
                 @attachment.assign nil
                 @attachment.save
               end

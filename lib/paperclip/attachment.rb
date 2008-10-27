@@ -79,6 +79,7 @@ module Paperclip
       @instance[:"#{@name}_content_type"] = uploaded_file.content_type.strip
       @instance[:"#{@name}_file_size"]    = uploaded_file.size.to_i
       @instance[:"#{@name}_updated_at"]   = Time.now
+      save_width_and_height uploaded_file
 
       @dirty = true
 
@@ -88,6 +89,17 @@ module Paperclip
       @instance[:"#{@name}_file_size"]    = uploaded_file.size.to_i
     ensure
       validate
+    end
+    
+    # Saves the original width of Image 
+    def save_width_and_height uploaded_file
+      return unless @instance.respond_to?(:"#{@name}_width") && @instance.respond_to?(:"#{@name}_width")
+
+      geometry = Geometry.from_file(@queued_for_write[:original])
+      @instance[:"#{@name}_width"] = geometry.width
+      @instance[:"#{@name}_height"] = geometry.height
+    rescue Paperclip::NotIdentifiedByImageMagickError
+      logger.warn("[paperclip] Could Not Save Width & Height Because We Could Not Identify Type Of The File #{name}")
     end
 
     # Returns the public URL of the attachment, with a given style. Note that this
@@ -283,6 +295,8 @@ module Paperclip
       @instance[:"#{@name}_file_name"]    = nil
       @instance[:"#{@name}_content_type"] = nil
       @instance[:"#{@name}_file_size"]    = nil
+      @instance[:"#{@name}_width"]        = nil
+      @instance[:"#{@name}_height"]       = nil
       @instance[:"#{@name}_updated_at"]   = nil
     end
 
