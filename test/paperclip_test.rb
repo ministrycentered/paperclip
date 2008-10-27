@@ -136,8 +136,10 @@ class PaperclipTest < Test::Unit::TestCase
     end
 
     [[:presence,      nil,                             "5k.png",   nil],
-     [:size,          {:in => 1..10240},               "5k.png",   "12k.png"],
+      [:size,          {:in => 1..10240},               "5k.png",   "12k.png"],
      [:size2,         {:in => 1..10240},               nil,        "12k.png"],
+     [:width,          {:in => 400..500},               "5k.png",   "50x50.png"],
+     [:height,          {:in => 60..70},               "5k.png",   "50x50.png"],
      [:content_type1, {:content_type => "image/png"},  "5k.png",   "text.txt"],
      [:content_type2, {:content_type => "text/plain"}, "text.txt", "5k.png"],
      [:content_type3, {:content_type => %r{image/.*}}, "5k.png",   "text.txt"],

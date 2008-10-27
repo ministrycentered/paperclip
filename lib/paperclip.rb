@@ -166,6 +166,64 @@ module Paperclip
         value.send(:flush_errors) unless value.valid?
       end
     end
+    
+    
+    # Places ActiveRecord-style validations on the height of the file assigned. The
+    # possible options are:
+    # * +in+: a Range of bytes (i.e. +1..1.megabyte+),
+    # * +less_than+: equivalent to :in => 0..options[:less_than]
+    # * +greater_than+: equivalent to :in => options[:greater_than]..Infinity
+    # * +message+: error message to display, use :min and :max as replacements
+    def validates_attachment_height name, options = {}
+      attachment_definitions[name][:validations] << lambda do |attachment, instance|
+        unless options[:greater_than].nil?
+          options[:in] = (options[:greater_than]..(1/0)) # 1/0 => Infinity
+        end
+        unless options[:less_than].nil?
+          options[:in] = (0..options[:less_than])
+        end
+        
+        if attachment.file? && !options[:in].include?(instance[:"#{name}_height"].to_i)
+          min = options[:in].first
+          max = options[:in].last
+          
+          if options[:message]
+            options[:message].gsub(/:min/, min.to_s).gsub(/:max/, max.to_s)
+          else
+            "height is not between #{min} and #{max} bytes."
+          end
+        end
+      end
+    end
+    
+        
+    # Places ActiveRecord-style validations on the width of the file assigned. The
+    # possible options are:
+    # * +in+: a Range of bytes (i.e. +1..1.megabyte+),
+    # * +less_than+: equivalent to :in => 0..options[:less_than]
+    # * +greater_than+: equivalent to :in => options[:greater_than]..Infinity
+    # * +message+: error message to display, use :min and :max as replacements
+    def validates_attachment_width name, options = {}
+      attachment_definitions[name][:validations] << lambda do |attachment, instance|
+        unless options[:greater_than].nil?
+          options[:in] = (options[:greater_than]..(1/0)) # 1/0 => Infinity
+        end
+        unless options[:less_than].nil?
+          options[:in] = (0..options[:less_than])
+        end
+        
+        if attachment.file? && !options[:in].include?(instance[:"#{name}_width"].to_i)
+          min = options[:in].first
+          max = options[:in].last
+          
+          if options[:message]
+            options[:message].gsub(/:min/, min.to_s).gsub(/:max/, max.to_s)
+          else
+            "width is not between #{min} and #{max} bytes."
+          end
+        end
+      end
+    end    
 
     # Places ActiveRecord-style validations on the size of the file assigned. The
     # possible options are:
